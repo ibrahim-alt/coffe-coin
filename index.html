@@ -6,9 +6,10 @@
     <title>Coffee Coin</title>
     <style>
         :root {
-            --background-color: #3b2f2f; /* Темно-коричневый цвет фона */
-            --text-color: #ffffff; /* Белый цвет текста */
-            --container-background-color: #2e2525; /* Чуть темнее основного фона */
+            --background-color: #3b2f2f;
+            --text-color: #ffffff;
+            --container-background-color: #2e2525;
+            --highlight-color: #5a3d3d;
         }
 
         body {
@@ -20,95 +21,134 @@
             margin: 0;
             background-color: var(--background-color);
             color: var(--text-color);
-            user-select: none; /* Запрещаем выделение всего текста на странице */
+            user-select: none;
         }
 
         .container {
             text-align: center;
             position: relative;
-            width: 300px; /* Ширина прямоугольника */
-            height: 600px; /* Высота прямоугольника */
+            width: 300px;
+            height: 600px;
             background-color: var(--container-background-color);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            border-radius: 10px; /* Добавим скругленные углы */
-            padding: 20px; /* Добавим отступы внутри контейнера */
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
 
         #coffee-img {
             max-width: 100px;
             cursor: pointer;
             transition: transform 0.3s ease;
-            user-select: none; /* Запрещаем выделение текста на иконке */
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
         #coffee-img:hover {
             transform: scale(1.1);
         }
 
-        h1, p, .level, .level-up {
-            user-select: none; /* Запрещаем выделение текста на всех элементах */
+        h1, p, .level, .level-up, .max-level {
+            user-select: none;
         }
 
         h1 {
             margin-top: -10px;
             margin-bottom: 5px;
-            font-size: 24px; /* Вернем размер шрифта */
-            color: var(--text-color);
-        }
-
-        p {
-            margin: 10px 0;
-            font-size: 16px; /* Вернем размер шрифта */
+            font-size: 24px;
             color: var(--text-color);
         }
 
         .progress-bar {
-            width: 100%; /* Увеличим ширину шкалы прогресса */
-            height: 15px; /* Сделаем шкалу прогресса уже */
+            width: 100%;
+            height: 15px;
             background-color: #d2b48c;
             border-radius: 5px;
             overflow: hidden;
-            margin-top: 10px;
-            position: relative; /* Установим относительное позиционирование */
+            margin-top: 40px;
+            position: relative;
         }
 
         .progress {
             height: 100%;
             background-color: #8b4513;
             border-radius: 5px;
-            transition: width 0.5s ease; /* Добавляем анимацию для ширины прогресса */
+            transition: width 0.5s ease;
         }
 
         .level {
-            font-size: 14px; /* Уменьшим размер шрифта */
+            font-size: 14px;
             position: absolute;
-            top: 400px; /* Положение под шкалой прогресса */
-            right: 20px; /* Смещаем вправо */
+            top: 385px;
+            right: 20px;
             color: var(--text-color);
-            white-space: nowrap; /* Уберем перенос текста */
-            transition: opacity 0.5s ease; /* Добавляем плавную анимацию для появления/исчезновения */
-            opacity: 1; /* Установим видимость */
+            white-space: nowrap;
+            transition: opacity 0.5s ease;
+            opacity: 1;
         }
 
-        .level-up {
+        .level-up, .max-level {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 30px; /* Увеличим размер шрифта */
+            font-size: 28px;
             color: #ffcc00;
             padding: 20px;
             border-radius: 10px;
             animation: fadeInOut 4s ease-out;
             display: none;
             z-index: 1000;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Легкое тень */
-            background-color: rgba(0, 0, 0, 0); /* Убрал темный фон */
-            pointer-events: none; /* Уберем возможность клика */
-            user-select: none; /* Запрещаем копирование */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            pointer-events: none;
+            user-select: none;
+        }
+
+        .coffee-tag {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background-color: var(--highlight-color);
+            color: var(--text-color);
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-size: 18px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            white-space: nowrap;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .coffee-tag:hover {
+            transform: scale(1.1);
+        }
+
+        .coffee-tag a {
+            text-decoration: none;
+            color: var(--text-color);
+            display: block;
+        }
+
+        .icon-container {
+            position: absolute;
+            top: 325px;
+            left: 85px;
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+        }
+
+        .icon-container img {
+            max-width: 54px;
+            margin-right: 8px;
+        }
+
+        .icon-container #clickCount {
+            color: var(--text-color);
+            font-size: 18px;
         }
 
         @keyframes fadeInOut {
@@ -119,14 +159,21 @@
 </head>
 <body>
     <div class="container">
+        <div class="coffee-tag">
+            <a href="https://www.geckoterminal.com/ru/ton/pools/EQAqYBcrPKNtw_M1aNkMW2CGS4DfuCQsBqG5mtzoDckgM2zk" target="_blank">Coffee!</a>
+        </div>
         <h1>Coffee Coin</h1>
+        <div class="icon-container">
+            <img src="monet.png" alt="Monet Icon">
+            <span id="clickCount">0</span>
+        </div>
         <img src="coffee_icon.png" id="coffee-img">
-        <p>Coffees: <span id="clickCount">0</span></p>
         <div class="progress-bar" id="progressBar">
             <div class="progress" id="progress"></div>
         </div>
         <p class="level">Level: <span id="levelCount">1</span></p>
         <div class="level-up" id="levelUpMessage">Level Up!</div>
+        <div class="max-level" id="maxLevelMessage">Поздравляю! Вы достигли максимального уровня!</div>
     </div>
 
     <script>
@@ -136,30 +183,49 @@
             const levelCountSpan = document.getElementById('levelCount');
             const progressBar = document.getElementById('progress');
             const levelUpMessage = document.getElementById('levelUpMessage');
+            const maxLevelMessage = document.getElementById('maxLevelMessage');
 
-            let clickCount = 0;
-            let level = 1;
-            const clicksPerLevel = 20; // Количество кликов для перехода на следующий уровень
+            let clickCount = parseInt(localStorage.getItem('clickCount')) || 0;
+            let level = parseInt(localStorage.getItem('level')) || 1;
+            const maxLevel = 10;
+            const clicksPerLevel = 20;
+
+            clickCountSpan.textContent = clickCount;
+            levelCountSpan.textContent = level;
+            const progressWidth = (clickCount % clicksPerLevel) / clicksPerLevel * 100;
+            progressBar.style.width = progressWidth + '%';
 
             coffeeImg.addEventListener('click', function() {
-                clickCount++;
-                clickCountSpan.textContent = clickCount;
-                
-                const progressWidth = (clickCount % clicksPerLevel) / clicksPerLevel * 100;
-                progressBar.style.width = progressWidth + '%';
+                if (level < maxLevel) {
+                    clickCount++;
+                    clickCountSpan.textContent = clickCount;
 
-                if (clickCount >= level * clicksPerLevel) {
-                    level++;
-                    levelCountSpan.textContent = level;
-                    progressBar.style.width = '0%'; // Сбрасываем прогрессбар при переходе на новый уровень
-                    levelUpMessage.style.display = 'block'; // Показываем сообщение о повышении уровня
-                    setTimeout(() => {
-                        levelUpMessage.style.display = 'none'; // Скрываем сообщение через 4 секунды
-                    }, 4000);
-                    levelUpMessage.classList.add('show');
-                    setTimeout(() => {
-                        levelUpMessage.classList.remove('show');
-                    }, 4500);
+                    const progressWidth = (clickCount % clicksPerLevel) / clicksPerLevel * 100;
+                    progressBar.style.width = progressWidth + '%';
+
+                    if (clickCount >= level * clicksPerLevel) {
+                        level++;
+                        if (level <= maxLevel) {
+                            levelCountSpan.textContent = level;
+                            progressBar.style.width = '0%';
+                            levelUpMessage.style.display = 'block';
+                            setTimeout(() => {
+                                levelUpMessage.style.display = 'none';
+                            }, 4000);
+                            levelUpMessage.classList.add('show');
+                            setTimeout(() => {
+                                levelUpMessage.classList.remove('show');
+                            }, 4500);
+                        } else {
+                            maxLevelMessage.style.display = 'block';
+                            setTimeout(() => {
+                                maxLevelMessage.style.display = 'none';
+                            }, 4000);
+                        }
+                    }
+
+                    localStorage.setItem('clickCount', clickCount);
+                    localStorage.setItem('level', level);
                 }
             });
         });
