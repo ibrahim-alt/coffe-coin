@@ -2,101 +2,166 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Coffee Coin</title>
     <style>
+        :root {
+            --background-color: #3b2f2f; /* Темно-коричневый цвет фона */
+            --text-color: #ffffff; /* Белый цвет текста */
+            --container-background-color: #2e2525; /* Чуть темнее основного фона */
+        }
+
         body {
             font-family: Arial, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            margin: 0; /* Убедимся, что нет дополнительных отступов */
+            margin: 0;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            user-select: none; /* Запрещаем выделение всего текста на странице */
         }
 
         .container {
-            text-align: center; /* Выравниваем содержимое по центру */
+            text-align: center;
             position: relative;
+            width: 300px; /* Ширина прямоугольника */
+            height: 600px; /* Высота прямоугольника */
+            background-color: var(--container-background-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-radius: 10px; /* Добавим скругленные углы */
+            padding: 20px; /* Добавим отступы внутри контейнера */
         }
 
         #coffee-img {
-            max-width: 100px; /* Уменьшим ширину изображения */
+            max-width: 100px;
             cursor: pointer;
-            transition: transform 0.3s ease; /* Добавим плавный переход при наведении */
+            transition: transform 0.3s ease;
+            user-select: none; /* Запрещаем выделение текста на иконке */
         }
 
         #coffee-img:hover {
-            transform: scale(1.1); /* Увеличим изображение при наведении */
+            transform: scale(1.1);
+        }
+
+        h1, p, .level, .level-up {
+            user-select: none; /* Запрещаем выделение текста на всех элементах */
         }
 
         h1 {
-            margin-top: -10px; /* Поднимем надпись на 10 пикселей */
-            margin-bottom: 5px; /* Уменьшим отступ снизу */
+            margin-top: -10px;
+            margin-bottom: 5px;
+            font-size: 24px; /* Вернем размер шрифта */
+            color: var(--text-color);
         }
 
         p {
-            margin: 0; /* Убедимся, что нет дополнительных отступов */
+            margin: 10px 0;
+            font-size: 16px; /* Вернем размер шрифта */
+            color: var(--text-color);
         }
 
         .progress-bar {
-            height: 10px; /* Высота шкалы */
-            background-color: #d2b48c; /* Цвет фона шкалы */
-            position: absolute;
-            bottom: -20px; /* Отступ снизу */
-            left: 50%;
-            transform: translateX(-50%);
-            border-radius: 5px; /* Округлим края */
-            overflow: hidden; /* Обрежем содержимое, которое может выходить за границы */
+            width: 100%; /* Увеличим ширину шкалы прогресса */
+            height: 15px; /* Сделаем шкалу прогресса уже */
+            background-color: #d2b48c;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 10px;
+            position: relative; /* Установим относительное позиционирование */
         }
 
         .progress {
-            width: 0; /* Изначально шкала пустая */
             height: 100%;
-            background-color: #8b4513; /* Цвет заполнения шкалы */
-            border-radius: 5px; /* Округлим края */
+            background-color: #8b4513;
+            border-radius: 5px;
+            transition: width 0.5s ease; /* Добавляем анимацию для ширины прогресса */
         }
 
         .level {
-            font-size: 10px; /* Очень маленький размер шрифта */
+            font-size: 14px; /* Уменьшим размер шрифта */
             position: absolute;
-            bottom: -35px; /* Отступ сверху */
-            right: 0;
+            top: 400px; /* Положение под шкалой прогресса */
+            right: 20px; /* Смещаем вправо */
+            color: var(--text-color);
+            white-space: nowrap; /* Уберем перенос текста */
+            transition: opacity 0.5s ease; /* Добавляем плавную анимацию для появления/исчезновения */
+            opacity: 1; /* Установим видимость */
+        }
+
+        .level-up {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 30px; /* Увеличим размер шрифта */
+            color: #ffcc00;
+            padding: 20px;
+            border-radius: 10px;
+            animation: fadeInOut 4s ease-out;
+            display: none;
+            z-index: 1000;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Легкое тень */
+            background-color: rgba(0, 0, 0, 0); /* Убрал темный фон */
+            pointer-events: none; /* Уберем возможность клика */
+            user-select: none; /* Запрещаем копирование */
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Coffee Coin</h1> <!-- Добавим обратно надпись "Coffee Coin" -->
-        <img src="coffee_icon.png" id="coffee-img"> <!-- Добавим id для изображения -->
-        <p>Coffees: <span id="clickCount">0</span></p> <!-- Изменим надпись -->
+        <h1>Coffee Coin</h1>
+        <img src="coffee_icon.png" id="coffee-img">
+        <p>Coffees: <span id="clickCount">0</span></p>
         <div class="progress-bar" id="progressBar">
-            <div class="progress"></div>
+            <div class="progress" id="progress"></div>
         </div>
-        <p class="level">Level: <span id="levelCount">1</span></p> <!-- Добавим надпись Level -->
+        <p class="level">Level: <span id="levelCount">1</span></p>
+        <div class="level-up" id="levelUpMessage">Level Up!</div>
     </div>
 
     <script>
-        // Получаем ширину надписи "Coffees" и устанавливаем ее в качестве ширины шкалы прогресса
-        const coffeesWidth = document.querySelector('p').offsetWidth;
-        document.getElementById('progressBar').style.width = coffeesWidth + 'px';
+        window.addEventListener('load', function() {
+            const coffeeImg = document.getElementById('coffee-img');
+            const clickCountSpan = document.getElementById('clickCount');
+            const levelCountSpan = document.getElementById('levelCount');
+            const progressBar = document.getElementById('progress');
+            const levelUpMessage = document.getElementById('levelUpMessage');
 
-        let clickCount = 0;
-        let level = 1; // Изначальный уровень
-        const coffeeImg = document.getElementById('coffee-img');
-        const clickCountSpan = document.getElementById('clickCount');
-        const levelCountSpan = document.getElementById('levelCount');
-        const progressBar = document.querySelector('.progress');
+            let clickCount = 0;
+            let level = 1;
+            const clicksPerLevel = 20; // Количество кликов для перехода на следующий уровень
 
-        coffeeImg.addEventListener('click', function() {
-            clickCount++;
-            clickCountSpan.textContent = clickCount;
-            // Обновляем шкалу прогресса
-            progressBar.style.width = (clickCount >= 100 ? 100 : clickCount) + '%';
-            // Проверяем, достигнут ли порог для увеличения уровня
-            if (clickCount >= level * 100) {
-                level++; // Увеличиваем уровень
-                levelCountSpan.textContent = level; // Обновляем отображение уровня
-            }
+            coffeeImg.addEventListener('click', function() {
+                clickCount++;
+                clickCountSpan.textContent = clickCount;
+                
+                const progressWidth = (clickCount % clicksPerLevel) / clicksPerLevel * 100;
+                progressBar.style.width = progressWidth + '%';
+
+                if (clickCount >= level * clicksPerLevel) {
+                    level++;
+                    levelCountSpan.textContent = level;
+                    progressBar.style.width = '0%'; // Сбрасываем прогрессбар при переходе на новый уровень
+                    levelUpMessage.style.display = 'block'; // Показываем сообщение о повышении уровня
+                    setTimeout(() => {
+                        levelUpMessage.style.display = 'none'; // Скрываем сообщение через 4 секунды
+                    }, 4000);
+                    levelUpMessage.classList.add('show');
+                    setTimeout(() => {
+                        levelUpMessage.classList.remove('show');
+                    }, 4500);
+                }
+            });
         });
     </script>
 </body>
