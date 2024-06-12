@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coffee Coin</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0; /* Убедимся, что нет дополнительных отступов */
+        }
+
+        .container {
+            text-align: center; /* Выравниваем содержимое по центру */
+            position: relative;
+        }
+
+        #coffee-img {
+            max-width: 100px; /* Уменьшим ширину изображения */
+            cursor: pointer;
+            transition: transform 0.3s ease; /* Добавим плавный переход при наведении */
+        }
+
+        #coffee-img:hover {
+            transform: scale(1.1); /* Увеличим изображение при наведении */
+        }
+
+        h1 {
+            margin-top: -10px; /* Поднимем надпись на 10 пикселей */
+            margin-bottom: 5px; /* Уменьшим отступ снизу */
+        }
+
+        p {
+            margin: 0; /* Убедимся, что нет дополнительных отступов */
+        }
+
+        .progress-bar {
+            height: 10px; /* Высота шкалы */
+            background-color: #d2b48c; /* Цвет фона шкалы */
+            position: absolute;
+            bottom: -20px; /* Отступ снизу */
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 5px; /* Округлим края */
+            overflow: hidden; /* Обрежем содержимое, которое может выходить за границы */
+        }
+
+        .progress {
+            width: 0; /* Изначально шкала пустая */
+            height: 100%;
+            background-color: #8b4513; /* Цвет заполнения шкалы */
+            border-radius: 5px; /* Округлим края */
+        }
+
+        .level {
+            font-size: 10px; /* Очень маленький размер шрифта */
+            position: absolute;
+            bottom: -35px; /* Отступ сверху */
+            right: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Coffee Coin</h1> <!-- Добавим обратно надпись "Coffee Coin" -->
+        <img src="coffee_icon.png" id="coffee-img"> <!-- Добавим id для изображения -->
+        <p>Coffees: <span id="clickCount">0</span></p> <!-- Изменим надпись -->
+        <div class="progress-bar" id="progressBar">
+            <div class="progress"></div>
+        </div>
+        <p class="level">Level: <span id="levelCount">1</span></p> <!-- Добавим надпись Level -->
+    </div>
+
+    <script>
+        // Получаем ширину надписи "Coffees" и устанавливаем ее в качестве ширины шкалы прогресса
+        const coffeesWidth = document.querySelector('p').offsetWidth;
+        document.getElementById('progressBar').style.width = coffeesWidth + 'px';
+
+        let clickCount = 0;
+        let level = 1; // Изначальный уровень
+        const coffeeImg = document.getElementById('coffee-img');
+        const clickCountSpan = document.getElementById('clickCount');
+        const levelCountSpan = document.getElementById('levelCount');
+        const progressBar = document.querySelector('.progress');
+
+        coffeeImg.addEventListener('click', function() {
+            clickCount++;
+            clickCountSpan.textContent = clickCount;
+            // Обновляем шкалу прогресса
+            progressBar.style.width = (clickCount >= 100 ? 100 : clickCount) + '%';
+            // Проверяем, достигнут ли порог для увеличения уровня
+            if (clickCount >= level * 100) {
+                level++; // Увеличиваем уровень
+                levelCountSpan.textContent = level; // Обновляем отображение уровня
+            }
+        });
+    </script>
+</body>
+</html>
