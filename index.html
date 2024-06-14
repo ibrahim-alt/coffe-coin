@@ -244,6 +244,7 @@
             color: var(--text-color);
         }
     </style>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
     <div class="loader">
@@ -271,11 +272,11 @@
         </div>
         <p class="level">Level: <span id="levelCount">1</span></p>
         <div class="level-up" id="levelUpMessage">Level Up!</div>
-                <div class="max-level" id="maxLevelMessage">Поздравляю! Вы достигли максимального уровня!</div>
+        <div class="max-level" id="maxLevelMessage">Поздравляю! Вы достигли максимального уровня!</div>
         
         <div class="referral-section">
             <h2>Пригласите друзей!</h2>
-            <a href="#" id="referralLink">Получить реферальную ссылку</a>
+                        <a href="#" id="referralLink">Получить реферальную ссылку</a>
         </div>
     </div>
 
@@ -304,8 +305,8 @@
 
         function generateReferralLink() {
             const userId = getCookie('userId');
-            const baseUrl = window.location.href;
-            return `https://t.me/CoffeeCoinBot?start=${userId}`;
+            const baseUrl = 'https://t.me/CoffeeCoinBot?start=';
+            return baseUrl + encodeURIComponent(userId);
         }
 
         window.addEventListener('load', () => {
