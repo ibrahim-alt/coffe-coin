@@ -25,37 +25,37 @@
             user-select: none;
         }
 
+        .loader {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .loader img {
+            width: 100px;
+            height: 100px;
+            animation: spin 3s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
         .container {
             text-align: center;
             position: relative;
             width: 300px;
             height: 600px;
             background-color: var(--container-background-color);
-            display: none; /* Скрыть контейнер, пока идет загрузка */
+            display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             border-radius: 10px;
             padding: 20px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        .loader {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            border: 16px solid #f3f3f3;
-            border-radius: 50%;
-            border-top: 16px solid #8b4513;
-            width: 120px;
-            height: 120px;
-            animation: spin 2s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: translate(-50%, -50%) rotate(0deg); }
-            100% { transform: translate(-50%, -50%) rotate(360deg); }
         }
 
         #coffee-img {
@@ -106,7 +106,7 @@
         .level {
             font-size: 14px;
             position: absolute;
-            top: 400px;
+            top: 350px;
             right: 20px;
             white-space: nowrap;
         }
@@ -159,7 +159,7 @@
 
         .icon-container {
             position: absolute;
-            top: 345px;
+            top: 300px;
             left: 90px;
             display: flex;
             align-items: center;
@@ -220,13 +220,40 @@
             0%, 100% { opacity: 0; }
             50% { opacity: 1; }
         }
+
+        .referral-section {
+            margin-top: 30px;
+        }
+
+        .referral-section h2 {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .referral-section a {
+            text-decoration: none;
+            background-color: var(--highlight-color);
+            color: var(--text-color);
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .referral-section a:hover {
+            background-color: var(--hover-color);
+            color: var(--text-color);
+        }
     </style>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
-    <div class="loader"></div>
-    <div class="container">
+    <div class="loader">
+        <img src="coffee_icon.png" alt="Loading...">
+    </div>
+
+    <div class="container" style="display: none;">
         <div class="coffee-tag">
-            <a href="#" id="referralLink">Coffee!</a>
+            <a href="https://www.geckoterminal.com/ru/ton/pools/EQAqYBcrPKNtw_M1aNkMW2CGS4DfuCQsBqG5mtzoDckgM2zk" target="_blank">Coffee!</a>
         </div>
         <div class="info-tag">
             <a href="#">Инфо</a>
@@ -246,6 +273,12 @@
         <p class="level">Level: <span id="levelCount">1</span></p>
         <div class="level-up" id="levelUpMessage">Level Up!</div>
         <div class="max-level" id="maxLevelMessage">Поздравляю! Вы достигли максимального уровня!</div>
+        
+        <div class="referral-section">
+            <h2>Пригласите друзей!</h2>
+            <a href="#" id="referralLink">Получить реферальную ссылку</a>
+
+ </div>
     </div>
 
     <script>
@@ -263,85 +296,100 @@
         function getCookie(name) {
             const nameEQ = name + "=";
             const ca = document.cookie.split(';');
-            for (let i = 0; i < ca.length for (let i = 0; i < ca.length; i++) {
-let c = ca[i];
+            for (let i = 0; i < ca.length; i++) {
+                let c = ca[i];
                 while (c.charAt(0) === ' ') c = c.substring(1, c.length);
                 if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
             }
             return null;
         }
 
-        function eraseCookie(name) {
-            document.cookie = name + '=; Max-Age=-99999999;';
-        }
-
         function generateReferralLink() {
-            const referralCode = 'some_unique_code'; // Замените на генерацию уникального кода для каждого пользователя
-            return `https://t.me/CoffeeCoinBot?start=${referralCode}`;
+            const userId = getCookie('userId');
+            return window.location.href + '?ref=' + userId;
         }
 
-        document.addEventListener("DOMContentLoaded", function() {
+        window.addEventListener('load', () => {
             const loader = document.querySelector('.loader');
             const container = document.querySelector('.container');
-
-            // Симуляция загрузки
-            setTimeout(function() {
-                loader.style.display = 'none';
-                container.style.display = 'flex';
-            }, 3000); // Продлить анимацию загрузки на 3 секунды
-
             const coffeeImg = document.getElementById('coffee-img');
-            const clickCount = document.getElementById('clickCount');
-            const levelCount = document.getElementById('levelCount');
+            const clickCountSpan = document.getElementById('clickCount');
+            const levelCountSpan = document.getElementById('levelCount');
             const progressBar = document.getElementById('progress');
             const levelUpMessage = document.getElementById('levelUpMessage');
             const maxLevelMessage = document.getElementById('maxLevelMessage');
             const referralLink = document.getElementById('referralLink');
 
-            let clicks = parseInt(getCookie('clicks') || '0', 10);
-            let level = parseInt(getCookie('level') || '1', 10);
+            let clickCount = parseInt(getCookie('clickCount')) || 0;
+            let level = parseInt(getCookie('level')) || 1;
+            const maxLevel = 10;
+            const clicksPerLevel = 20;
+            let maxLevelReached = getCookie('maxLevelReached') === 'true';
 
-            clickCount.textContent = clicks;
-            levelCount.textContent = level;
-            updateProgressBar();
-
-            coffeeImg.addEventListener('click', function() {
-                clicks += 1;
-                clickCount.textContent = clicks;
-                setCookie('clicks', clicks, 365);
-
-                if (clicks % 10 === 0) {
-                    level += 1;
-                    levelCount.textContent = level;
-                    setCookie('level', level, 365);
-                    showLevelUpMessage();
-
-                    if (level === 10) {
-                        showMaxLevelMessage();
-                    }
+            const updateProgress = () => {
+                clickCountSpan.textContent = clickCount;
+                levelCountSpan.textContent = level;
+                if (level < maxLevel) {
+                    progressBar.style.width = (clickCount % clicksPerLevel) / clicksPerLevel * 100 + '%';
+                } else {
+                    progressBar.style.width = '0%';
                 }
-                updateProgressBar();
+            };
+
+            updateProgress();
+
+            coffeeImg.addEventListener('mousedown', () => {
+                coffeeImg.style.transform = 'rotate(-5deg)';
             });
 
-            function updateProgressBar() {
-                const progressPercentage = (clicks % 10) * 10;
-                progressBar.style.width = `${progressPercentage}%`;
-            }
+            coffeeImg.addEventListener('mouseup', () => {
+                coffeeImg.style.transform = 'rotate(5deg)';
+                setTimeout(() => {
+                    coffeeImg.style.transform = 'rotate(0deg)';
+                }, 200);
+            });
 
-            function showLevelUpMessage() {
-                levelUpMessage.style.display = 'block';
-                setTimeout(function() {
-                    levelUpMessage.style.display = 'none';
-                }, 4000);
-            }
+            coffeeImg.addEventListener('click', () => {
+                clickCount++;
+                if (!maxLevelReached && clickCount >= level * clicksPerLevel) {
+                    level++;
+                    progressBar.style.width = '0%';
+                    if (level < maxLevel) {
+                        levelUpMessage.style.display = 'block';
+                        setTimeout(() => { levelUpMessage.style.display = 'none'; }, 4000);
+                    }
+                    if (level === maxLevel) {
+                        maxLevelReached = true;
+                        setCookie('maxLevelReached', 'true', 365);
+                        maxLevelMessage.style.display = 'block';
+                        setTimeout(() => { maxLevelMessage.style.display = 'none'; }, 4000);
+                    }
+                }
+                updateProgress();
+                setCookie('clickCount', clickCount, 365);
+                setCookie('level', level, 365);
+            });
 
-            function showMaxLevelMessage() {
-                maxLevelMessage.style.display = 'block';
-            }
+            referralLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                const link = generateReferralLink();
+                navigator.clipboard.writeText(link).then(() => {
+                    alert('Реферальная ссылка скопирована: ' + link);
+                });
+            });
 
-            referralLink.href = generateReferralLink();
+            setTimeout(() => {
+                loader.style.display = 'none';
+                container.style.display = 'flex';
+                if (window.Telegram.WebApp) {
+                    Telegram.WebApp.expand();
+                }
+            }, 3000); // Увеличьте значение, чтобы продлить анимацию загрузки
+
+            console.log(`Initial clickCount: ${clickCount}`);
+            console.log(`Initial level: ${level}`);
+            console.log(`Max level reached: ${maxLevelReached}`);
         });
     </script>
 </body>
 </html>
-
