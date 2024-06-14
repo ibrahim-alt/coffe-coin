@@ -1,292 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Coffee Coin</title>
-    <style>
-        :root {
-            --background-color: #3b2f2f;
-            --text-color: #ffffff;
-            --container-background-color: #2e2525;
-            --highlight-color: #5a3d3d;
-            --hover-color: #d2b48c;
-        }
-
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: var(--background-color);
-            color: var(--text-color);
-            user-select: none;
-        }
-
-        .loader {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-
-        .loader img {
-            width: 100px;
-            height: 100px;
-            animation: spin 3s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .container {
-            text-align: center;
-            position: relative;
-            width: 300px;
-            height: 600px;
-            background-color: var(--container-background-color);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        #coffee-img {
-            max-width: 100px;
-            height: 100px;
-            cursor: pointer;
-            transition: transform 0.3s ease;
-            user-select: none;
-            -webkit-tap-highlight-color: transparent;
-            object-fit: cover;
-        }
-
-        #coffee-img:hover {
-            transform: scale(1.1);
-        }
-
-        #coffee-img:active {
-            transform: rotate(-5deg);
-        }
-
-        h1, p, .level, .level-up, .max-level {
-            user-select: none;
-        }
-
-        h1 {
-            margin-top: -10px;
-            margin-bottom: 5px;
-            font-size: 24px;
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 15px;
-            background-color: #d2b48c;
-            border-radius: 5px;
-            overflow: hidden;
-            margin-top: 40px;
-            position: relative;
-        }
-
-        .progress {
-            height: 100%;
-            background-color: #8b4513;
-            border-radius: 5px;
-            transition: width 0.5s ease;
-        }
-
-        .level {
-            font-size: 14px;
-            position: absolute;
-            top: 350px;
-            right: 20px;
-            white-space: nowrap;
-        }
-
-        .level-up, .max-level {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 28px;
-            color: #ffcc00;
-            padding: 20px;
-            border-radius: 10px;
-            animation: fadeInOut 4s ease-out;
-            display: none;
-            z-index: 1000;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            pointer-events: none;
-        }
-
-        .coffee-tag {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            background-color: var(--highlight-color);
-            padding: 10px 15px;
-            border-radius: 10px;
-            font-size: 18px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            white-space: nowrap;
-            cursor: pointer;
-            transition: transform 0.3s ease, color 0.3s ease, background-color 0.3s ease;
-        }
-
-        .coffee-tag:hover {
-            transform: scale(1.1);
-            background-color: #5a3d3d;
-        }
-
-        .coffee-tag a {
-            text-decoration: none;
-            color: var(--text-color);
-            display: block;
-            transition: color 0.3s ease;
-        }
-
-        .coffee-tag a:hover {
-            color: var(--hover-color);
-        }
-
-        .icon-container {
-            position: absolute;
-            top: 300px;
-            left: 90px;
-            display: flex;
-            align-items: center;
-        }
-
-        .icon-container img {
-            max-width: 54px;
-            margin-right: 8px;
-        }
-
-        .icon-container #clickCount {
-            font-size: 18px;
-        }
-
-        .info-tag, .info2-tag {
-            max-width: 100px;
-            max-height: 100px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: var(--highlight-color);
-            padding: 10px 15px;
-            border-radius: 10px;
-            font-size: 18px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            white-space: nowrap;
-            cursor: pointer;
-            transition: transform 0.3s ease, color 0.3s ease, background-color 0.3s ease;
-            position: absolute;
-            top: 20px;
-        }
-
-        .info-tag {
-            right: 130px;
-        }
-
-        .info2-tag {
-            right: 20px;
-        }
-
-        .info-tag:hover, .info2-tag:hover {
-            transform: scale(1.1);
-            background-color: #5a3d3d;
-        }
-
-        .info-tag a, .info2-tag a {
-            text-decoration: none;
-            color: var(--text-color);
-            display: block;
-            transition: color 0.3s ease;
-        }
-
-        .info-tag a:hover, .info2-tag a:hover {
-            color: var(--hover-color);
-        }
-
-        @keyframes fadeInOut {
-            0%, 100% { opacity: 0; }
-            50% { opacity: 1; }
-        }
-
-        .referral-section {
-            margin-top: 30px;
-        }
-
-        .referral-section h2 {
-            font-size: 20px;
-            margin-bottom: 10px;
-        }
-
-        .referral-section a {
-            text-decoration: none;
-            background-color: var(--highlight-color);
-            color: var(--text-color);
-            padding: 10px 20px;
-            border-radius: 5px;
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-
-        .referral-section a:hover {
-            background-color: var(--hover-color);
-            color: var(--text-color);
-        }
-    </style>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-</head>
-<body>
-    <div class="loader">
-        <img src="coffee_icon.png" alt="Loading...">
-    </div>
-
-    <div class="container" style="display: none;">
-        <div class="coffee-tag">
-            <a href="https://www.geckoterminal.com/ru/ton/pools/EQAqYBcrPKNtw_M1aNkMW2CGS4DfuCQsBqG5mtzoDckgM2zk" target="_blank">Coffee!</a>
-        </div>
-        <div class="info-tag">
-            <a href="#">Инфо</a>
-        </div>
-        <div class="info2-tag">
-            <a href="#">Инфо2</a>
-        </div>
-        <h1>Coffee Coin</h1>
-        <div class="icon-container">
-            <img src="monet.png" alt="Monet Icon">
-            <span id="clickCount">0</span>
-        </div>
-        <img src="coffee_icon.png" id="coffee-img">
-        <div class="progress-bar" id="progressBar">
-            <div class="progress" id="progress"></div>
-        </div>
-        <p class="level">Level: <span id="levelCount">1</span></p>
-        <div class="level-up" id="levelUpMessage">Level Up!</div>
-        <div class="max-level" id="maxLevelMessage">Поздравляю! Вы достигли максимального уровня!</div>
-        
-        <div class="referral-section">
-            <h2>Пригласите друзей!</h2>
-            <a href="#" id="referralLink">Получить реферальную ссылку</a>
-        </div>
-    </div>
-
-    <script>
+<script>
         function setCookie(name, value, days) {
             let expires = "";
             if (days) {
                 const date = new Date();
                 date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
- expires = "; expires=" + date.toUTCString();
+                expires = "; expires=" + date.toUTCString();
             }
             document.cookie = name + "=" + (value || "") + expires + "; path=/";
             console.log(`Set cookie: ${name}=${value}${expires}`);
@@ -305,7 +23,8 @@
 
         function generateReferralLink() {
             const userId = getCookie('userId');
-            return window.location.href + '?ref=' + userId;
+            const baseUrl = 'https://t.me/CoffeeCoinBot?start=';
+            return baseUrl + userId;
         }
 
         window.addEventListener('load', () => {
@@ -389,6 +108,11 @@
             console.log(`Initial level: ${level}`);
             console.log(`Max level reached: ${maxLevelReached}`);
         });
+
+        // Убедитесь, что userId генерируется и сохраняется
+        if (!getCookie('userId')) {
+            setCookie('userId', Math.random().toString(36).substr(2, 9), 365);
+        }
     </script>
 </body>
 </html>
