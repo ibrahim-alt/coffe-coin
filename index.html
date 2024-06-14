@@ -23,9 +23,38 @@
             background-color: var(--background-color);
             color: var(--text-color);
             user-select: none;
+            overflow: hidden;
+        }
+
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+        }
+
+        .loader div {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #ffffff;
+            border-top: 5px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         .container {
+            display: none;
             text-align: center;
             position: relative;
             width: 300px;
@@ -42,10 +71,12 @@
 
         #coffee-img {
             max-width: 100px;
+            height: 100px;
             cursor: pointer;
             transition: transform 0.3s ease;
             user-select: none;
             -webkit-tap-highlight-color: transparent;
+            object-fit: cover;
         }
 
         #coffee-img:hover {
@@ -86,7 +117,7 @@
         .level {
             font-size: 14px;
             position: absolute;
-            top: 385px;
+            top: 400px;
             right: 20px;
             white-space: nowrap;
         }
@@ -139,8 +170,8 @@
 
         .icon-container {
             position: absolute;
-            top: 325px;
-            left: 85px;
+            top: 345px;
+            left: 90px;
             display: flex;
             align-items: center;
         }
@@ -154,6 +185,48 @@
             font-size: 18px;
         }
 
+        .info-tag, .info2-tag {
+            max-width: 100px;
+            max-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--highlight-color);
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-size: 18px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            white-space: nowrap;
+            cursor: pointer;
+            transition: transform 0.3s ease, color 0.3s ease, background-color 0.3s ease;
+            position: absolute;
+            top: 20px;
+        }
+
+        .info-tag {
+            right: 130px;
+        }
+
+        .info2-tag {
+            right: 20px;
+        }
+
+        .info-tag:hover, .info2-tag:hover {
+            transform: scale(1.1);
+            background-color: #5a3d3d;
+        }
+
+        .info-tag a, .info2-tag a {
+            text-decoration: none;
+            color: var(--text-color);
+            display: block;
+            transition: color 0.3s ease;
+        }
+
+        .info-tag a:hover, .info2-tag a:hover {
+            color: var(--hover-color);
+        }
+
         @keyframes fadeInOut {
             0%, 100% { opacity: 0; }
             50% { opacity: 1; }
@@ -161,9 +234,18 @@
     </style>
 </head>
 <body>
+    <div class="loader">
+        <div></div>
+    </div>
     <div class="container">
         <div class="coffee-tag">
             <a href="https://www.geckoterminal.com/ru/ton/pools/EQAqYBcrPKNtw_M1aNkMW2CGS4DfuCQsBqG5mtzoDckgM2zk" target="_blank">Coffee!</a>
+        </div>
+        <div class="info-tag">
+            <a href="#">Инфо</a>
+        </div>
+        <div class="info2-tag">
+            <a href="#">Инфо2</a>
         </div>
         <h1>Coffee Coin</h1>
         <div class="icon-container">
@@ -201,8 +283,9 @@
             }
             return null;
         }
-
-        window.addEventListener('load', () => {
+ window.addEventListener('load', () => {
+            const loader = document.querySelector('.loader');
+            const container = document.querySelector('.container');
             const coffeeImg = document.getElementById('coffee-img');
             const clickCountSpan = document.getElementById('clickCount');
             const levelCountSpan = document.getElementById('levelCount');
@@ -263,7 +346,21 @@
             console.log(`Initial clickCount: ${clickCount}`);
             console.log(`Initial level: ${level}`);
             console.log(`Max level reached: ${maxLevelReached}`);
+
+            // Hide loader and show container when the page is fully loaded
+            loader.style.display = 'none';
+            container.style.display = 'flex';
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const isMinApp = window.location.href.includes('tg://');
+            if (isMinApp) {
+                const body = document.querySelector('body');
+                body.style.height = '100vh';
+                body.style.overflow = 'hidden';
+            }
         });
     </script>
 </body>
 </html>
+
