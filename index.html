@@ -23,29 +23,19 @@
             background-color: var(--background-color);
             color: var(--text-color);
             user-select: none;
-            overflow: hidden;
         }
 
         .loader {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
             display: flex;
             justify-content: center;
             align-items: center;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 9999;
+            height: 100vh;
         }
 
-        .loader div {
-            width: 50px;
-            height: 50px;
-            border: 5px solid #ffffff;
-            border-top: 5px solid transparent;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
+        .loader img {
+            width: 100px;
+            height: 100px;
+            animation: spin 3s linear infinite;
         }
 
         @keyframes spin {
@@ -54,7 +44,6 @@
         }
 
         .container {
-            display: none;
             text-align: center;
             position: relative;
             width: 300px;
@@ -117,7 +106,7 @@
         .level {
             font-size: 14px;
             position: absolute;
-            top: 400px;
+            top: 350px;
             right: 20px;
             white-space: nowrap;
         }
@@ -170,7 +159,7 @@
 
         .icon-container {
             position: absolute;
-            top: 345px;
+            top: 300px;
             left: 90px;
             display: flex;
             align-items: center;
@@ -231,13 +220,38 @@
             0%, 100% { opacity: 0; }
             50% { opacity: 1; }
         }
+
+        .referral-section {
+            margin-top: 30px;
+        }
+
+        .referral-section h2 {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .referral-section a {
+            text-decoration: none;
+            background-color: var(--highlight-color);
+            color: var(--text-color);
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .referral-section a:hover {
+            background-color: var(--hover-color);
+            color: var(--text-color);
+        }
     </style>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
     <div class="loader">
-        <div></div>
+        <img src="coffee_icon.png" alt="Loading...">
     </div>
-    <div class="container">
+
+    <div class="container" style="display: none;">
         <div class="coffee-tag">
             <a href="https://www.geckoterminal.com/ru/ton/pools/EQAqYBcrPKNtw_M1aNkMW2CGS4DfuCQsBqG5mtzoDckgM2zk" target="_blank">Coffee!</a>
         </div>
@@ -259,6 +273,12 @@
         <p class="level">Level: <span id="levelCount">1</span></p>
         <div class="level-up" id="levelUpMessage">Level Up!</div>
         <div class="max-level" id="maxLevelMessage">Поздравляю! Вы достигли максимального уровня!</div>
+        
+        <div class="referral-section">
+            <h2>Пригласите друзей!</h2>
+            <a href="#" id="referralLink">Получить реферальную ссылку</a>
+
+ </div>
     </div>
 
     <script>
@@ -283,7 +303,13 @@
             }
             return null;
         }
- window.addEventListener('load', () => {
+
+        function generateReferralLink() {
+            const userId = getCookie('userId');
+            return window.location.href + '?ref=' + userId;
+        }
+
+        window.addEventListener('load', () => {
             const loader = document.querySelector('.loader');
             const container = document.querySelector('.container');
             const coffeeImg = document.getElementById('coffee-img');
@@ -292,6 +318,7 @@
             const progressBar = document.getElementById('progress');
             const levelUpMessage = document.getElementById('levelUpMessage');
             const maxLevelMessage = document.getElementById('maxLevelMessage');
+            const referralLink = document.getElementById('referralLink');
 
             let clickCount = parseInt(getCookie('clickCount')) || 0;
             let level = parseInt(getCookie('level')) || 1;
@@ -343,24 +370,26 @@
                 setCookie('level', level, 365);
             });
 
+            referralLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                const link = generateReferralLink();
+                navigator.clipboard.writeText(link).then(() => {
+                    alert('Реферальная ссылка скопирована: ' + link);
+                });
+            });
+
+            setTimeout(() => {
+                loader.style.display = 'none';
+                container.style.display = 'flex';
+                if (window.Telegram.WebApp) {
+                    Telegram.WebApp.expand();
+                }
+            }, 3000); // Увеличьте значение, чтобы продлить анимацию загрузки
+
             console.log(`Initial clickCount: ${clickCount}`);
             console.log(`Initial level: ${level}`);
             console.log(`Max level reached: ${maxLevelReached}`);
-
-            // Hide loader and show container when the page is fully loaded
-            loader.style.display = 'none';
-            container.style.display = 'flex';
-        });
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const isMinApp = window.location.href.includes('tg://');
-            if (isMinApp) {
-                const body = document.querySelector('body');
-                body.style.height = '100vh';
-                body.style.overflow = 'hidden';
-            }
         });
     </script>
 </body>
 </html>
-
