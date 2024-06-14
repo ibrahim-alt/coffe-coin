@@ -10,6 +10,7 @@
             --text-color: #ffffff;
             --container-background-color: #2e2525;
             --highlight-color: #5a3d3d;
+            --hover-color: #d2b48c;
         }
 
         body {
@@ -51,6 +52,10 @@
             transform: scale(1.1);
         }
 
+        #coffee-img:active {
+            transform: rotate(-5deg);
+        }
+
         h1, p, .level, .level-up, .max-level {
             user-select: none;
         }
@@ -59,7 +64,6 @@
             margin-top: -10px;
             margin-bottom: 5px;
             font-size: 24px;
-            color: var(--text-color);
         }
 
         .progress-bar {
@@ -84,10 +88,7 @@
             position: absolute;
             top: 385px;
             right: 20px;
-            color: var(--text-color);
             white-space: nowrap;
-            transition: opacity 0.5s ease;
-            opacity: 1;
         }
 
         .level-up, .max-level {
@@ -104,7 +105,6 @@
             z-index: 1000;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             pointer-events: none;
-            user-select: none;
         }
 
         .coffee-tag {
@@ -112,24 +112,29 @@
             top: 20px;
             left: 20px;
             background-color: var(--highlight-color);
-            color: var(--text-color);
             padding: 10px 15px;
             border-radius: 10px;
             font-size: 18px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             white-space: nowrap;
             cursor: pointer;
-            transition: transform 0.3s ease;
+            transition: transform 0.3s ease, color 0.3s ease, background-color 0.3s ease;
         }
 
         .coffee-tag:hover {
             transform: scale(1.1);
+            background-color: #5a3d3d;
         }
 
         .coffee-tag a {
             text-decoration: none;
             color: var(--text-color);
             display: block;
+            transition: color 0.3s ease;
+        }
+
+        .coffee-tag a:hover {
+            color: var(--hover-color);
         }
 
         .icon-container {
@@ -138,7 +143,6 @@
             left: 85px;
             display: flex;
             align-items: center;
-            margin: 10px 0;
         }
 
         .icon-container img {
@@ -147,7 +151,6 @@
         }
 
         .icon-container #clickCount {
-            color: var(--text-color);
             font-size: 18px;
         }
 
@@ -177,7 +180,29 @@
     </div>
 
     <script>
-        window.addEventListener('load', function() {
+        function setCookie(name, value, days) {
+            let expires = "";
+            if (days) {
+                const date = new Date();
+                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                expires = "; expires=" + date.toUTCString();
+            }
+            document.cookie = name + "=" + (value || "") + expires + "; path=/";
+            console.log(`Set cookie: ${name}=${value}${expires}`);
+        }
+
+        function getCookie(name) {
+            const nameEQ = name + "=";
+            const ca = document.cookie.split(';');
+            for (let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+                if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+            }
+            return null;
+        }
+
+        window.addEventListener('load', () => {
             const coffeeImg = document.getElementById('coffee-img');
             const clickCountSpan = document.getElementById('clickCount');
             const levelCountSpan = document.getElementById('levelCount');
@@ -185,49 +210,59 @@
             const levelUpMessage = document.getElementById('levelUpMessage');
             const maxLevelMessage = document.getElementById('maxLevelMessage');
 
-            let clickCount = parseInt(localStorage.getItem('clickCount')) || 0;
-            let level = parseInt(localStorage.getItem('level')) || 1;
+            let clickCount = parseInt(getCookie('clickCount')) || 0;
+            let level = parseInt(getCookie('level')) || 1;
             const maxLevel = 10;
             const clicksPerLevel = 20;
+            let maxLevelReached = getCookie('maxLevelReached') === 'true';
 
-            clickCountSpan.textContent = clickCount;
-            levelCountSpan.textContent = level;
-            const progressWidth = (clickCount % clicksPerLevel) / clicksPerLevel * 100;
-            progressBar.style.width = progressWidth + '%';
-
-            coffeeImg.addEventListener('click', function() {
+            const updateProgress = () => {
+                clickCountSpan.textContent = clickCount;
+                levelCountSpan.textContent = level;
                 if (level < maxLevel) {
-                    clickCount++;
-                    clickCountSpan.textContent = clickCount;
-
-                    const progressWidth = (clickCount % clicksPerLevel) / clicksPerLevel * 100;
-                    progressBar.style.width = progressWidth + '%';
-
-                    if (clickCount >= level * clicksPerLevel) {
-                        level++;
-                        if (level <= maxLevel) {
-                            levelCountSpan.textContent = level;
-                            progressBar.style.width = '0%';
-                            levelUpMessage.style.display = 'block';
-                            setTimeout(() => {
-                                levelUpMessage.style.display = 'none';
-                            }, 4000);
-                            levelUpMessage.classList.add('show');
-                            setTimeout(() => {
-                                levelUpMessage.classList.remove('show');
-                            }, 4500);
-                        } else {
-                            maxLevelMessage.style.display = 'block';
-                            setTimeout(() => {
-                                maxLevelMessage.style.display = 'none';
-                            }, 4000);
-                        }
-                    }
-
-                    localStorage.setItem('clickCount', clickCount);
-                    localStorage.setItem('level', level);
+                    progressBar.style.width = (clickCount % clicksPerLevel) / clicksPerLevel * 100 + '%';
+                } else {
+                    progressBar.style.width = '0%';
                 }
+            };
+
+            updateProgress();
+
+            coffeeImg.addEventListener('mousedown', () => {
+                coffeeImg.style.transform = 'rotate(-5deg)';
             });
+
+            coffeeImg.addEventListener('mouseup', () => {
+                coffeeImg.style.transform = 'rotate(5deg)';
+                setTimeout(() => {
+                    coffeeImg.style.transform = 'rotate(0deg)';
+                }, 200);
+            });
+
+            coffeeImg.addEventListener('click', () => {
+                clickCount++;
+                if (!maxLevelReached && clickCount >= level * clicksPerLevel) {
+                    level++;
+                    progressBar.style.width = '0%';
+                    if (level < maxLevel) {
+                        levelUpMessage.style.display = 'block';
+                        setTimeout(() => { levelUpMessage.style.display = 'none'; }, 4000);
+                    }
+                    if (level === maxLevel) {
+                        maxLevelReached = true;
+                        setCookie('maxLevelReached', 'true', 365);
+                        maxLevelMessage.style.display = 'block';
+                        setTimeout(() => { maxLevelMessage.style.display = 'none'; }, 4000);
+                    }
+                }
+                updateProgress();
+                setCookie('clickCount', clickCount, 365);
+                setCookie('level', level, 365);
+            });
+
+            console.log(`Initial clickCount: ${clickCount}`);
+            console.log(`Initial level: ${level}`);
+            console.log(`Max level reached: ${maxLevelReached}`);
         });
     </script>
 </body>
