@@ -174,7 +174,7 @@
             font-size: 18px;
         }
 
-        .info-tag, .info2-tag {
+        .info-tag, .wallet-tag {
             max-width: 100px;
             max-height: 100px;
             display: flex;
@@ -196,23 +196,23 @@
             right: 130px;
         }
 
-        .info2-tag {
+        .wallet-tag {
             right: 20px;
         }
 
-        .info-tag:hover, .info2-tag:hover {
+        .info-tag:hover, .wallet-tag:hover {
             transform: scale(1.1);
             background-color: #5a3d3d;
         }
 
-        .info-tag a, .info2-tag a {
+        .info-tag a, .wallet-tag a {
             text-decoration: none;
-            color: var (--text-color);
+            color: var(--text-color);
             display: block;
             transition: color 0.3s ease;
         }
 
-        .info-tag a:hover, .info2-tag a:hover {
+        .info-tag a:hover, .wallet-tag a:hover {
             color: var(--hover-color);
         }
 
@@ -245,6 +245,7 @@
         }
     </style>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tonconnect/sdk@latest"></script>
 </head>
 <body>
     <div class="loader">
@@ -258,8 +259,8 @@
         <div class="info-tag">
             <a href="#">Инфо</a>
         </div>
-        <div class="info2-tag">
-            <a href="#">Инфо2</a>
+        <div class="wallet-tag">
+            <a href="#" id="walletLink">Wallet</a>
         </div>
         <h1>Coffee Coin</h1>
         <div class="icon-container">
@@ -282,7 +283,7 @@
 
     <script>
         function setCookie(name, value, days) {
-            let expires = "";
+                        let expires = "";
             if (days) {
                 const date = new Date();
                 date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
@@ -313,6 +314,22 @@
             return baseUrl + encodeURIComponent(userId);
         }
 
+        async function connectWallet() {
+            const tonConnect = new TonConnect();
+            await tonConnect.restoreConnection();
+            if (tonConnect.isConnected) {
+                alert('Вы уже подключены к кошельку.');
+            } else {
+                try {
+                    await tonConnect.connect({ adapter: 'tonkeeper' });
+                    alert('Кошелек успешно подключен.');
+                } catch (error) {
+                    console.error('Ошибка подключения кошелька:', error);
+                    alert('Ошибка подключения кошелька.');
+                }
+            }
+        }
+
         window.addEventListener('load', () => {
             const loader = document.querySelector('.loader');
             const container = document.querySelector('.container');
@@ -323,6 +340,7 @@
             const levelUpMessage = document.getElementById('levelUpMessage');
             const maxLevelMessage = document.getElementById('maxLevelMessage');
             const referralLink = document.getElementById('referralLink');
+            const walletLink = document.getElementById('walletLink');
 
             // Проверка данных пользователя из Telegram
             const tg = window.Telegram.WebApp;
@@ -397,6 +415,11 @@
                 }
             });
 
+            walletLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                connectWallet();
+            });
+
             setTimeout(() => {
                 loader.style.display = 'none';
                 container.style.display = 'flex';
@@ -412,3 +435,4 @@
     </script>
 </body>
 </html>
+
