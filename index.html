@@ -174,7 +174,7 @@
             font-size: 18px;
         }
 
-        .info-tag, .wallet-tag {
+        .info-tag, .info2-tag {
             max-width: 100px;
             max-height: 100px;
             display: flex;
@@ -196,23 +196,23 @@
             right: 130px;
         }
 
-        .wallet-tag {
+        .info2-tag {
             right: 20px;
         }
 
-        .info-tag:hover, .wallet-tag:hover {
+        .info-tag:hover, .info2-tag:hover {
             transform: scale(1.1);
             background-color: #5a3d3d;
         }
 
-        .info-tag a, .wallet-tag a {
+        .info-tag a, .info2-tag a {
             text-decoration: none;
             color: var(--text-color);
             display: block;
             transition: color 0.3s ease;
         }
 
-        .info-tag a:hover, .wallet-tag a:hover {
+        .info-tag a:hover, .info2-tag a:hover {
             color: var(--hover-color);
         }
 
@@ -245,7 +245,6 @@
         }
     </style>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tonconnect/sdk@latest"></script>
 </head>
 <body>
     <div class="loader">
@@ -259,8 +258,8 @@
         <div class="info-tag">
             <a href="#">Инфо</a>
         </div>
-        <div class="wallet-tag">
-            <a href="#" id="walletLink">Wallet</a>
+        <div class="info2-tag" id="walletLink">
+            <a href="#">Wallet</a>
         </div>
         <h1>Coffee Coin</h1>
         <div class="icon-container">
@@ -273,7 +272,7 @@
         </div>
         <p class="level">Level: <span id="levelCount">1</span></p>
         <div class="level-up" id="levelUpMessage">Level Up!</div>
-        <div class="max-level" id="maxLevelMessage">Поздравляю! Вы достигли максимального уровня!</div>
+                <div class="max-level" id="maxLevelMessage">Поздравляю! Вы достигли максимального уровня!</div>
         
         <div class="referral-section">
             <h2>Пригласите друзей!</h2>
@@ -283,7 +282,7 @@
 
     <script>
         function setCookie(name, value, days) {
-                        let expires = "";
+            let expires = "";
             if (days) {
                 const date = new Date();
                 date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
@@ -314,19 +313,14 @@
             return baseUrl + encodeURIComponent(userId);
         }
 
-        async function connectWallet() {
-            const tonConnect = new TonConnect();
-            await tonConnect.restoreConnection();
-            if (tonConnect.isConnected) {
-                alert('Вы уже подключены к кошельку.');
+        function connectWallet() {
+            const tg = window.Telegram.WebApp;
+            if (tg && tg.isUserAuthorized) {
+                tg.sendData(JSON.stringify({
+                    action: 'TON_CONNECT'
+                }));
             } else {
-                try {
-                    await tonConnect.connect({ adapter: 'tonkeeper' });
-                    alert('Кошелек успешно подключен.');
-                } catch (error) {
-                    console.error('Ошибка подключения кошелька:', error);
-                    alert('Ошибка подключения кошелька.');
-                }
+                alert('Пожалуйста, авторизуйтесь в Telegram.');
             }
         }
 
