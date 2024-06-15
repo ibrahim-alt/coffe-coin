@@ -207,7 +207,7 @@
 
         .info-tag a, .info2-tag a {
             text-decoration: none;
-            color: var(--text-color);
+            color: var (--text-color);
             display: block;
             transition: color 0.3s ease;
         }
@@ -305,6 +305,10 @@
 
         function generateReferralLink() {
             const userId = getCookie('userId');
+            if (!userId) {
+                alert('Ошибка: Не удалось получить ваш уникальный ID');
+                return '#';
+            }
             const baseUrl = 'https://t.me/CoffeeCoinBot/CoffeeCoin/start?startapp=';
             return baseUrl + encodeURIComponent(userId);
         }
@@ -319,6 +323,19 @@
             const levelUpMessage = document.getElementById('levelUpMessage');
             const maxLevelMessage = document.getElementById('maxLevelMessage');
             const referralLink = document.getElementById('referralLink');
+
+            // Проверка данных пользователя из Telegram
+            const tg = window.Telegram.WebApp;
+            let userId = tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user.id : null;
+
+            if (userId) {
+                setCookie('userId', userId, 365);
+            } else {
+                userId = getCookie('userId');
+                if (!userId) {
+                    alert('Ошибка: Не удалось получить ваш уникальный ID');
+                }
+            }
 
             let clickCount = parseInt(getCookie('clickCount')) || 0;
             let level = parseInt(getCookie('level')) || 1;
@@ -373,9 +390,11 @@
             referralLink.addEventListener('click', (e) => {
                 e.preventDefault();
                 const link = generateReferralLink();
-                navigator.clipboard.writeText(link).then(() => {
-                    alert('Реферальная ссылка скопирована: ' + link);
-                });
+                if (link !== '#') {
+                    navigator.clipboard.writeText(link).then(() => {
+                        alert('Реферальная ссылка скопирована: ' + link);
+                    });
+                }
             });
 
             setTimeout(() => {
