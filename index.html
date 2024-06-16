@@ -245,7 +245,7 @@
         }
     </style>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tonconnect/sdk@latest"></script>
+    <script src="https://unpkg.com/@tonconnect/sdk@latest"></script>
 </head>
 <body>
     <div class="loader">
@@ -283,8 +283,7 @@
 
     <script>
         // Функции для работы с cookies
-        function setCookie(name, value, days) {
-            let expires = "";
+        function setCookie(name, value, days) {             let expires = "";
             if (days) {
                 const date = new Date();
                 date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
@@ -439,3 +438,4 @@
 </body>
 </html>
 
+           
