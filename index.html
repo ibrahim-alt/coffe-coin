@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    
+    <script src="https://unpkg.com/@tonconnect/sdk@latest/dist/tonconnect-sdk.min.js" defer></script> 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Coffee Coin</title>
@@ -245,9 +245,13 @@
             color: var(--text-color);
         }
     </style>
+<script src="https://unpkg.com/@tonconnect/sdk@latest/dist/tonconnect-sdk.min.js"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://unpkg.com/@tonconnect/sdk@0.0.34/dist/tonconnect-sdk.min.js" defer></script>
+         <script>
+        const connector = new TonConnectSDK.TonConnect();
+    </script> 
     <script>
+        
         document.addEventListener('DOMContentLoaded', function() {
             // Проверка и использование TonConnect SDK
             const TonConnect = window.TonConnect;
@@ -275,11 +279,6 @@
             }
         });
     </script>
-    
-    <script>
-        const connector = new TonConnectSDK.TonConnect();
-    </script> 
-    
 </head>
 <body>
     <div class="loader">
