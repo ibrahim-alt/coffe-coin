@@ -1,20 +1,7 @@
 {
-    "version": "v1",
-    "name": "Coffee Coin App",
-    "description": "Earn coffee coins by connecting your TON wallet",
-    "icon": "https://github.com/ibrahim-alt/coffe-coin/blob/master/coffee_icon.png",
-    "redirectUri": "https://your-app-domain.com/ton-connect-redirect",
-    "signMessage": true,
-    "accounts": [
-        {
-            "type": "ton",
-            "address": "0:abcd1234abcd1234abcd1234abcd1234abcd1234abcd1234abcd1234abcd1234"
-        }
-    ],
-    "buttons": [
-        {
-            "text": "Connect Wallet",
-            "action": "connect"
-        }
-    ]
+  "url": "https://ibrahim-alt.github.io/coffe-coin/",
+  "name": "coffe-coin",
+  "iconUrl": "https://github.com/ibrahim-alt/coffe-coin/blob/master/coffee_icon.png",
+  "termsOfUseUrl": ""
+  "privacyPolicyUrl":""
 }
