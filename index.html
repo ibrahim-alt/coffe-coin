@@ -245,7 +245,8 @@
         }
     </style>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://unpkg.com/@tonconnect/sdk@latest"></script>
+    <script src="https://unpkg.com/@tonconnect/sdk@0.0.34/dist/tonconnect-sdk.min.js"></script>
+    
 </head>
 <body>
     <div class="loader">
@@ -318,7 +319,7 @@
         // Функция для подключения к TON кошельку
         async function connectWallet() {
             const tonConnect = new TonConnect({
-                manifestUrl: 'https://tonconnect.dev/manifest.json'
+                manifestUrl: 'https://raw.githubusercontent.com/ibrahim-alt/coffe-coin/master/tonconnect-manifest.json'
             });
 
             try {
