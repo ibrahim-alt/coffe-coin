@@ -245,6 +245,7 @@
         }
     </style>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tonconnect/sdk@latest"></script>
 </head>
 <body>
     <div class="loader">
@@ -281,11 +282,13 @@
     </div>
 
     <script>
+       
+        // Функции для работы с cookies
         function setCookie(name, value, days) {
             let expires = "";
             if (days) {
                 const date = new Date();
-                                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
                 expires = "; expires=" + date.toUTCString();
             }
             document.cookie = name + "=" + (value || "") + expires + "; path=/";
@@ -303,6 +306,7 @@
             return null;
         }
 
+        // Генерация реферальной ссылки
         function generateReferralLink() {
             const userId = getCookie('userId');
             if (!userId) {
@@ -313,14 +317,20 @@
             return baseUrl + encodeURIComponent(userId);
         }
 
-        function connectWallet() {
-            const tg = window.Telegram.WebApp;
-            if (tg && tg.isUserAuthorized) {
-                tg.sendData(JSON.stringify({
-                    action: 'TON_CONNECT'
-                }));
-            } else {
-                alert('Пожалуйста, авторизуйтесь в Telegram.');
+        // Функция для подключения к TON кошельку
+        async function connectWallet() {
+            const tonConnect = new TonConnect({
+                manifestUrl: 'https://tonconnect.dev/manifest.json'
+            });
+
+            try {
+                const user = await tonConnect.connect();
+                console.log('User connected:', user);
+                setCookie('userId', user.id, 365);
+                alert('Успешное подключение к TON кошельку!');
+            } catch (error) {
+                console.error('Error connecting to TON wallet:', error);
+                alert('Ошибка при подключении к TON кошельку.');
             }
         }
 
@@ -429,4 +439,3 @@
     </script>
 </body>
 </html>
-
