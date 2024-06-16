@@ -2,7 +2,7 @@
     "version": "v1",
     "name": "Coffee Coin App",
     "description": "Earn coffee coins by connecting your TON wallet",
-    "icon": "https://your-app-domain.com/icon.png",
+    "icon": "https://github.com/ibrahim-alt/coffe-coin/blob/master/coffee_icon.png",
     "redirectUri": "https://your-app-domain.com/ton-connect-redirect",
     "signMessage": true,
     "accounts": [
