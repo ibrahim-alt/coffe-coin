@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Coffee Coin</title>
@@ -245,7 +246,39 @@
         }
     </style>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://unpkg.com/@tonconnect/sdk@0.0.34/dist/tonconnect-sdk.min.js"></script>
+    <script src="https://unpkg.com/@tonconnect/sdk@0.0.34/dist/tonconnect-sdk.min.js" defer></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Проверка и использование TonConnect SDK
+            const TonConnect = window.TonConnect;
+    
+            if (TonConnect) {
+                console.log('TonConnect SDK loaded.');
+                const connector = new TonConnect({
+                    manifestUrl: 'https://raw.githubusercontent.com/ibrahim-alt/coffe-coin/master/tonconnect-manifest.json'
+                });
+    
+                async function connectWallet() {
+                    try {
+                        const user = await connector.connect();
+                        console.log('User connected:', user);
+                        document.getElementById('walletStatus').innerText = `Connected as ${user.address}`;
+                    } catch (error) {
+                        console.error('Error connecting to TON wallet:', error);
+                        alert('Error connecting to TON wallet.');
+                    }
+                }
+    
+                document.getElementById('connectButton').addEventListener('click', connectWallet);
+            } else {
+                console.error('TonConnect SDK not loaded.');
+            }
+        });
+    </script>
+    
+    <script>
+        const connector = new TonConnectSDK.TonConnect();
+    </script> 
     
 </head>
 <body>
@@ -316,6 +349,7 @@
             return baseUrl + encodeURIComponent(userId);
         }
 
+        
         // Функция для подключения к TON кошельку
         async function connectWallet() {
             const tonConnect = new TonConnect({
@@ -438,5 +472,3 @@
     </script>
 </body>
 </html>
-
-           
