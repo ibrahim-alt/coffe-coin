@@ -1,0 +1,20 @@
+{
+    "version": "v1",
+    "name": "Coffee Coin App",
+    "description": "Earn coffee coins by connecting your TON wallet",
+    "icon": "https://your-app-domain.com/icon.png",
+    "redirectUri": "https://your-app-domain.com/ton-connect-redirect",
+    "signMessage": true,
+    "accounts": [
+        {
+            "type": "ton",
+            "address": "0:abcd1234abcd1234abcd1234abcd1234abcd1234abcd1234abcd1234abcd1234"
+        }
+    ],
+    "buttons": [
+        {
+            "text": "Connect Wallet",
+            "action": "connect"
+        }
+    ]
+}
